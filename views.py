@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+def do_a_super_thing():
+    compute = 0
+    for i in range(10000):
+        compute += i
+    return compute
 
-# Create your views here.
+def index(request):
+    h = do_a_super_thing()
+    return HttpResponse(f"Hello,{h} world. You're at the polls index.")
