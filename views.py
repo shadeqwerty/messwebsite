@@ -1,20 +1,48 @@
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .Processor_Codes.maincode import *
-from django.shortcuts import render
+from .Processor_Codes.Processor import *
+from django.shortcuts import render, redirect
+from .forms import ReviewForm
+from django.utils.html import format_html
 
 
+def my_view(request):
+    # Get the current time, day, and session
+    current_time_ist, day, session = get_current_time_session_day()
+    now_time = str(current_time_ist)
 
-def do_a_super_thing():
-    compute = 0
-    for i in range(10000):
-        compute += i
-    return compute
+    # Get the next menu item and the latest updated menu
+    Next_menu_item = get_menu_items(day, session)
+    latest_updated_menu, access_time = read_google_sheet_update()
 
-def index_old(request):
-    h = do_a_super_thing()
-    hmtl_synth()
-    return HttpResponse(f"Hello,{h} world. You're at the polls index.")
-def index(request):
-    hmtl_synth()
-    return render(request, 'index2.html')
+    # Handle the form submission
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ReviewForm()
+
+    # Render the template
+    return render(request, 'page.html', {
+        'now_time': now_time,
+        'Next_menu_item': Next_menu_item,
+        'latest_updated_menu': latest_updated_menu,
+        'access_time': access_time,
+        'day': day,
+        'session': session,
+        'form': form,
+    })
+
+def submit_review(request):
+    print("here")
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ReviewForm()
+
+    return render(request, 'submit_review.html', {'form': form})

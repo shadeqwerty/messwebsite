@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Next Menu Item: {{ day }} for {{ session }} </h2>
+    <p>{{ Next_menu_item }}</p>
+    <h2>Latest Updated Menu at {{ access_time }}</h2>
+    <p>{{ latest_updated_menu }}</p>
+</div>
+<div class="container">
+    <h2>Review</h2>
+    <form action="{% url 'submit_review' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit Review">
+    </form>
+</div>
+{% endblock %}

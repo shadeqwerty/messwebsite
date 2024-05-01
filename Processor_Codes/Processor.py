@@ -28,18 +28,37 @@ def get_current_time_session_day():
     ist = pytz.timezone('Asia/Kolkata')
     current_time_ist = time.localtime(time.mktime(current_time_utc)).tm_hour + ist.utcoffset(datetime.datetime.now()).seconds//3600# df.loc[len(df.index)] = {"Day":"IST",'Breakfast':str(current_time_ist)}
     now_time = str(current_time_ist)
+    print(current_time_ist)
+    day = time.strftime("%A")
     # if breakfast then its 7:30 am to 10:15 am
     if current_time_ist <= 10:
         session = "Breakfast"
     # if lunch then its 12:30 pm to 2:30 pm
-    elif current_time_ist <= 15:
+    elif current_time_ist < 13:
         session = "Lunch"
     # if snacks then its 4:30 pm to 6:00 pm
-    elif current_time_ist <= 18:
+    elif current_time_ist < 18:
         session = "Snacks"
     # if dinner then its 7:30 pm to 9:15 pm
-    else:
+    elif current_time_ist < 22:
         session = "Dinner"
+    else:
+        session = "Breakfast"
+        # change the day to tomorrow
+        if day == "Monday":
+            day = "Tuesday"
+        elif day == "Tuesday":
+            day = "Wednesday"
+        elif day == "Wednesday":
+            day = "Thursday"
+        elif day == "Thursday":
+            day = "Friday"
+        elif day == "Friday":
+            day = "Saturday"
+        elif day == "Saturday":
+            day = "Sunday"
+        elif day == "Sunday":
+            day = "Monday"
     # get the day from the todays
-    day = time.strftime("%A")
+    print(session, day, current_time_ist)
     return(current_time_ist, day,session)
