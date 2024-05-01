@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+
+{% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #6c757d;
+    }
+
+    .review-box {
+        background-color: #e9ecef;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .review-box h2 {
+        margin-top: 0;
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: #6c757d;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% if user.is_authenticated %}
+    <div class="container">
+        <h2>Review</h2>
+        <form action="{% url 'submit_review' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit Review">
+        </form>
+    </div>
+{% else %}
+    <p>You must be logged in to submit a review.</p>
+{% endif %}
+<div class="container">
+    <a href="{% url 'reviews' %}" class="btn">View All Reviews</a>
+</div>
+<h1>All Reviews</h1>
+{% for review in reviews %}
+    <div class="review-box">
+        <h2>{{ review.food_item.name }}</h2>
+        <p><strong>Date:</strong> {{ review.date|date:"F j, Y, P" }}</p>
+        <p><strong>Rating:</strong> {{ review.rating }}</p>
+        <p><strong>Comment:</strong> {{ review.comments }}</p>
+    </div>
+{% empty %}
+    <p>No reviews yet.</p>
+{% endfor %}
+<div class="container" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <canvas id="chart" width="500" height="500"></canvas>
+    <script>
+        fetch('/mess_management/chart-data/')
+          .then(response => response.json())
+          .then(data => {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Average Rating',
+                        data: data.data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+          });
+    </script> 
+    <a href="/">Home</a>
+</div>
+{% endblock %}
+
+
+<!--     
+<script>
+    fetch('/chart-data/')
+      .then(response => response.json())
+      .then(data => {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Average Rating',
+                    data: data.data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+      });
+</script> -->

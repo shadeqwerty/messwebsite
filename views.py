@@ -4,7 +4,29 @@ from .Processor_Codes.Processor import *
 from django.shortcuts import render, redirect
 from .forms import ReviewForm
 from django.utils.html import format_html
+from .models import Review
+from django.http import JsonResponse
+from django.db.models import Avg
+from django.contrib.auth import logout
 
+def logout_view(request):
+    print("logging out")
+    logout(request)
+    return redirect('index')
+
+def chart_data(request):
+    labels = []
+    data = []
+
+    queryset = Review.objects.values('food_item__name').annotate(avg_rating=Avg('rating')).order_by('-avg_rating')
+    for entry in queryset:
+        labels.append(entry['food_item__name'])
+        data.append(entry['avg_rating'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
 
 def my_view(request):
     # Get the current time, day, and session
@@ -46,3 +68,8 @@ def submit_review(request):
         form = ReviewForm()
 
     return render(request, 'submit_review.html', {'form': form})
+
+
+def reviews(request):
+    reviews = Review.objects.all()
+    return render(request, 'reviews.html', {'reviews': reviews})

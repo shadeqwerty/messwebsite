@@ -1,18 +1,54 @@
 {% extends "base.html" %}
-
 {% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #6c757d;
+    }
+
+    .info-box {
+        background-color: #e9ecef;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: #6c757d;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background-color: #5a6268;
+    }
+</style>
 <div class="container">
-    <h2>Next Menu Item: {{ day }} for {{ session }} </h2>
-    <p>{{ Next_menu_item }}</p>
-    <h2>Latest Updated Menu at {{ access_time }}</h2>
-    <p>{{ latest_updated_menu }}</p>
-</div>
-<div class="container">
-    <h2>Review</h2>
-    <form action="{% url 'submit_review' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit Review">
-    </form>
+    <div class="info-box">
+        <h2>Next Menu Item: {{ day }} for {{ session }} </h2>
+        <p>{{ Next_menu_item }}</p>
+    </div>
+    <div class="info-box">
+        <h2>Latest Updated Menu at {{ access_time }}</h2>
+        <p>{{ latest_updated_menu }}</p>
+    </div>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'login' %}">Login to make your reviews</a>
+    {% endif %}
+    <a href="{% url 'reviews' %}" class="btn">View All Reviews</a>
 </div>
 {% endblock %}

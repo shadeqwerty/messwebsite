@@ -20,4 +20,4 @@ class Review(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES,  default=1)
-    comments = models.TextField(default='Test')
+    comments = models.TextField(default='')
