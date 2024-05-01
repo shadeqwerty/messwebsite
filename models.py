@@ -21,3 +21,5 @@ class Review(models.Model):
     food_item = models.ForeignKey(FoodItem, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=RATING_CHOICES,  default=1)
     comments = models.TextField(default='')
+    def __str__(self):
+        return f'Review by {self.user.username} on {self.food_item.name}'

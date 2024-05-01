@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .Processor_Codes.Processor import *
 from django.shortcuts import render, redirect
 from .forms import ReviewForm
+from django.contrib import messages
 from django.utils.html import format_html
 from .models import Review
 from django.http import JsonResponse
@@ -12,6 +13,8 @@ from django.contrib.auth import logout
 def logout_view(request):
     print("logging out")
     logout(request)
+    messages.success(request, "Logged out successfully")
+
     return redirect('index')
 
 def chart_data(request):

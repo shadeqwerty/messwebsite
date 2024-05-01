@@ -46,14 +46,25 @@
     <div class="header-strip">C Mess Menu and Feedback</div>
     <div class="login-status">
         {% if user.is_authenticated %}
-            Logged in as {{ user.username }} | <a href="{% url 'logout' %}">Logout</a>
+            Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>
         {% else %}
             Not logged in | <a href="{% url 'login' %}">Login</a>
         {% endif %}
     </div>
     <div class="container">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
+    
+    
     <footer>
         <div class="container">
             <p>&copy; 2024 No Rights are reserved as of now :P.</p>
