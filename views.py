@@ -9,6 +9,10 @@ from .models import Review
 from django.http import JsonResponse
 from django.db.models import Avg
 from django.contrib.auth import logout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
+
 
 def logout_view(request):
     print("logging out")
@@ -60,19 +64,34 @@ def my_view(request):
         'form': form,
     })
 
+@login_required
 def submit_review(request):
-    print("here")
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('index')
+            review = form.save(commit=False)
+            review.user = request.user
+            review.save()
+            return redirect('reviews')
     else:
         form = ReviewForm()
 
     return render(request, 'submit_review.html', {'form': form})
 
 
-def reviews(request):
+def reviews_viewer(request):
     reviews = Review.objects.all()
     return render(request, 'reviews.html', {'reviews': reviews})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'You have successfully registered!')
+
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})

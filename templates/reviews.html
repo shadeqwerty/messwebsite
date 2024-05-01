@@ -45,19 +45,18 @@
 </style>
 {% if user.is_authenticated %}
     <div class="container">
-        <h2>Review</h2>
-        <form action="{% url 'submit_review' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit Review">
-        </form>
+        <div class="review-box">
+            <h2>Dear User, Please Review here</h2>
+            <form action="{% url 'submitreview' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Submit a new review">
+            </form>
+        </div>
     </div>
 {% else %}
     <p>You must be logged in to submit a review.</p>
 {% endif %}
-<div class="container">
-    <a href="{% url 'reviews' %}" class="btn">View All Reviews</a>
-</div>
 <h1>All Reviews</h1>
 {% for review in reviews %}
     <div class="review-box">
@@ -72,10 +71,10 @@
 <div class="container" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
     <canvas id="chart" width="500" height="500"></canvas>
     <script>
-        fetch('/mess_management/chart-data/')
+        fetch('chart-data/')
           .then(response => response.json())
           .then(data => {
-            var ctx = document.getElementById('myChart').getContext('2d');
+            var ctx = document.getElementById('chart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -97,8 +96,7 @@
                 }
             });
           });
-    </script> 
-    <a href="/">Home</a>
+    </script>
 </div>
 {% endblock %}
 
