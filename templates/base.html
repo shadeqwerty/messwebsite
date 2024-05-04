@@ -49,6 +49,16 @@
             text-align: right;
             padding: 10px;
         }
+        .login-box33 {
+        border: 1px solid #151080; /* This will create a border around the box */
+        /* set login box transparency */
+        background-color: rgba(250, 252, 251, 0.3);
+        padding: 3px; /* Add some padding to give the content inside the box some space */
+        border-radius: 9px;
+
+
+        display: inline-block; /* This will make the box fit the content */
+    }
     </style>
 </head>
 <body>
@@ -60,7 +70,9 @@
                     {% if user.is_authenticated %}
                         Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>
                     {% else %}
-                        Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                        <div class="login-box33">
+                            Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
