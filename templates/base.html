@@ -15,8 +15,13 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-        }
+            font-size: 16px; /* Default font size for desktop */
 
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px; /* Smaller font size for tablets and mobile devices */
+            }
         header {
             background-color: #333;
             color: #ffffff;
