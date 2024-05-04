@@ -6,9 +6,13 @@
     body {
         background-color: #f8f9fa;
         color: #333;
-        font-family: Arial, sans-serif;
-    }
+        font-size: 16px; /* Default font size for desktop */
 
+        }
+@media (max-width: 768px) {
+    body {
+        font-size: 14px; /* Smaller font size for tablets and mobile devices */
+    }
     .container {
         max-width: 800px;
         margin: 0 auto;
