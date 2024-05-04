@@ -71,7 +71,12 @@
                         Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>
                     {% else %}
                         <div class="login-box33">
-                            Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                            {% if not on_register_page %}
+                                    Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                            {% else %}
+                                    Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                                    Register to the services
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>

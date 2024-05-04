@@ -12,7 +12,9 @@
     @media (max-width: 768px) {
         body {
             /* Different background for mobile */
-            background: url('https://images.unsplash.com/photo-1555448248-2571daf6344b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlcnN8ZW58MHwxfDB8fHwy'); 
+            background: url('https://images.unsplash.com/photo-1556139943-4bdca53adf1e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            /* https://images.unsplash.com/photo-1604077350837-c7f82f28653f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
+            /* https://images.unsplash.com/photo-1555448248-2571daf6344b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlcnN8ZW58MHwxfDB8fHwy');  */
             -webkit-background-size: contain;
             -moz-background-size: contain;
             -o-background-size: contain;
@@ -24,12 +26,18 @@
     }
 
     .info-box {
-        background-color: #e9ecef;
+        background-color: #e9ecef58;
         border-radius: 5px;
         padding: 20px;
         margin-bottom: 20px;
     }
-
+    .container_cntr {
+        background-color: #f2f6f95e;
+        margin-bottom: 10px;
+        padding: 20px;
+        justify-content: center;
+        align-items: center;
+    }
     .btn {
         display: inline-block;
         background-color: #6c757d;
@@ -41,6 +49,7 @@
 
     .btn:hover {
         background-color: #5a6268;
+
     }
 </style>
 <div class="row">
@@ -59,7 +68,10 @@
                 <p>{{ latest_updated_menu }}</p>
             </div> -->
             {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}">Login to make your reviews</a>
+            <div class="container_cntr">
+                <a href="{% url 'register' %}">Register to make your reviews</a>
+                <a href="{% url 'login' %}">Login to make your reviews</a>
+            </div>
             {% endif %}
             <a href="{% url 'reviews' %}" class="btn">View All Reviews or Submit your review</a>
         </div>
