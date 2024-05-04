@@ -7,6 +7,8 @@
     <title>C Mess Menu and Feedback</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,32 +46,36 @@
     </style>
 </head>
 <body>
-    <div class="header-strip">C Mess Menu and Feedback</div>
-    <div class="login-status">
-        {% if user.is_authenticated %}
-            Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>
-        {% else %}
-            Not logged in | <a href="{% url 'login' %}">Login / Register</a>
-        {% endif %}
-    </div>
     <div class="container">
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-    
-    
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 No Rights are reserved as of now :P.</p>
+        <div class="row">
+            <div class="col">
+                <div class="header-strip">C Mess Menu and Feedback</div>
+                <div class="login-status">
+                    {% if user.is_authenticated %}
+                        Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>
+                    {% else %}
+                        Not logged in | <a href="{% url 'login' %}">Login / Register</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </footer>
+        <div class="row">
+            <div class="col">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

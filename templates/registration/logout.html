@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container">
-        <div class="message">
-            <h1>You have been logged out</h1>
-            <p>Thank you for visiting. We hope to see you again soon!</p>
-            <a href="{% url 'login' %}">Login</a>
+  
+    <div class="row">
+        <div class="col">
+            <div class="container">
+                <div class="message">
+                    <h1>You have been logged out</h1>
+                    <p>Thank you for visiting. We hope to see you again soon!</p>
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
