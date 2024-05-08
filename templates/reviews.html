@@ -2,48 +2,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
 
 {% block content %}
-<style>
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    h2 {
-        color: #6c757d;
-    }
-
-    .review-box {
-        background-color: #e9ecef;
-        border-radius: 5px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .review-box h2 {
-        margin-top: 0;
-    }
-
-    .btn {
-        display: inline-block;
-        background-color: #6c757d;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-
-    .btn:hover {
-        background-color: #5a6268;
-    }
-</style>
 <div class="row">
     <div class="col">
         {% if user.is_authenticated %}
     <div class="container">
         <div class="review-box">
             <h2>Dear User, Please Review here</h2>
-            <form action="{% url 'submitreview' %}" method="post">
+            <form action="{% url 'submitmenureview' %}" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Submit a new review">
@@ -64,38 +29,7 @@
 {% empty %}
     <p>No reviews yet.</p>
 {% endfor %}
-<div class="container" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <canvas id="chart" width="500" height="500"></canvas>
-    <script>
-        fetch('chart-data/')
-          .then(response => response.json())
-          .then(data => {
-            var ctx = document.getElementById('chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: 'Average Rating',
-                        data: data.data,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-          });
-    </script>
-</div>
-    </div>
-</div>
+
 
 {% endblock %}
 

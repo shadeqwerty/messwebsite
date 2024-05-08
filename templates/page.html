@@ -1,75 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<style>
-    
-    body {
-        background: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-    }
-    @media (max-width: 768px) {
-        body {
-            /* Different background for mobile */
-            background: url('https://images.unsplash.com/photo-1556139943-4bdca53adf1e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-            /* https://images.unsplash.com/photo-1604077350837-c7f82f28653f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
-            /* https://images.unsplash.com/photo-1555448248-2571daf6344b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlcnN8ZW58MHwxfDB8fHwy');  */
-            -webkit-background-size: contain;
-            -moz-background-size: contain;
-            -o-background-size: contain;
-            background-size: contain;
-        }
-    }
-    h2 {
-        color: #6c757d;
-    }
 
-    .info-box {
-        background-color: #e9ecef58;
-        border-radius: 5px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    .container_cntr {
-        background-color: #f2f6f95e;
-        margin-bottom: 10px;
-        padding: 20px;
-        justify-content: center;
-        align-items: center;
-    }
-    .btn {
-        display: inline-block;
-        background-color: #6c757d;
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    .btnsel {
-        display: inline-block;
-        background-color: #b63a1525;
-        color: #0911f0;
-        padding: 2px 5px;
-        border-radius: 10px;
-        text-decoration: none;
-    }
-    .btn:hover {
-        background-color: #5a6268;
-
-    }
-</style>
 <div class="row">
     <div class="col">
         <div class="container">
             <div class="info-box">
-                <h2>Next Menu Item: {{ day }} for {{ session }} </h2>
-                <p>{{ Next_menu_item }}</p>
+                {% regroup Next_menu_item by day as menu_items_by_day %}
+
+                {% for day in menu_items_by_day %}
+                <!-- <h3>{{ day.grouper }}</h3> Day -->
+
+                {% regroup day.list by session as menu_items_by_session %}
+                {% for session in menu_items_by_session %}
+                <h4>Next Menu Item for {{ day.grouper }} - {{ session.grouper }}</h4> <!-- Session -->
+
+                {% regroup session.list by week_type as menu_items_by_week_type %}
+                {% for week_type in menu_items_by_week_type %}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Food Items</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for menu_item in week_type.list %}
+                        <tr>
+                            <td>{{ menu_item.food_item }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td>No menu items found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
             </div>
             <div class="info-box">
-                <h2>View Full Menu  </h2>
-                <p>Selection </p>
-                <a href="{% url 'menu_items' %}">View Menu Items</a>
+                <a href="{% url 'menu_items' %}" class = "good_btn">View Menu Items by selection</a>
             </div>
             <!-- <div class="info-box">
                 <h2>Latest Updated Menu at {{ access_time }}</h2>
@@ -80,7 +52,10 @@
                 <a href="{% url 'login' %}" class ="btnsel">Login / Register to make your reviews</a>
             </div>
             {% endif %}
-            <a href="{% url 'reviews' %}" class="btn">View All Reviews or Submit your review</a>
+            <div class="container_cntr">
+                <a href="{% url 'reviews' %}" class="btnde">View All Reviews or Submit your review</a>
+
+            </div>
         </div>
     </div>
 </div>

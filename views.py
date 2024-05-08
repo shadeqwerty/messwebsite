@@ -2,16 +2,15 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, permission_required
 from .Processor_Codes.Processor import *
 from django.shortcuts import render, redirect
-from .forms import ReviewForm
+from .forms import ReviewForm , FilterForm
 from django.contrib import messages
 from django.utils.html import format_html
-from .models import Review
 from django.http import JsonResponse
 from django.db.models import Avg
 from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import MenuItem
+from .models import MenuItem, Review
 from datetime import datetime
 from django.db.models import Q
 
@@ -38,9 +37,6 @@ def chart_data(request):
     })
 
 def menu_items(request):
-    import random
-    from datetime import datetime
-    
     if request.method == 'POST':
         day = request.POST.get('day', None)
         date = request.POST.get('date')
@@ -106,7 +102,7 @@ def my_view(request):
     now_time = str(current_time_ist)
 
     # Get the next menu item and the latest updated menu
-    Next_menu_item = get_menu_items(day, session)
+    Next_menu_item = get_menu_items(current_time_ist, day, session)
     latest_updated_menu, access_time = read_google_sheet_update()
 
     # Handle the form submission
@@ -129,20 +125,46 @@ def my_view(request):
         'form': form,
     })
 
+
+
+def review_view(request):
+    if request.method == 'POST':
+        filter_form = FilterForm(request.POST)
+        if filter_form.is_valid():
+            # Get the item based on the filters
+            item = MenuItem.objects.filter(
+                session=filter_form.cleaned_data['session'],
+                week_type=filter_form.cleaned_data['week_type'],
+                day=filter_form.cleaned_data['day']
+            ).first()
+            # Pass the item to the review form
+            review_form = ReviewForm(initial={'item': item})
+    else:
+        filter_form = FilterForm()
+        review_form = ReviewForm()
+
+    return render(request, 'review.html', {'filter_form': filter_form, 'review_form': review_form})
+
+
 @login_required
-def submit_review(request):
+def submitmenureview(request):
+    menu_item = None
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            review = form.save(commit=False)
-            review.user = request.user
-            review.save()
-            return redirect('reviews')
+            session = form.cleaned_data['session']
+            date = form.cleaned_data['date']
+            week_type = form.cleaned_data['week_type']
+            day = form.cleaned_data['day']
+            menu_item = MenuItem.objects.filter(session=session, date=date, week_type=week_type, day=day).first()
+            if menu_item:
+                new_review = Review(user=request.user, food_item=menu_item, rating=form.cleaned_data['rating'], comments=form.cleaned_data['comments'])
+                new_review.save()
+                return redirect('reviews')
     else:
         form = ReviewForm()
 
-    return render(request, 'submit_review.html', {'form': form})
-
+    return render(request, 'submit_menu_review.html', {'form': form, 'menu_item': menu_item})
 
 def reviews_viewer(request):
     reviews = Review.objects.all()

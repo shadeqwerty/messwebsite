@@ -2,6 +2,8 @@ import pandas as pd
 import time
 import pytz
 import datetime
+from ..models import MenuItem
+from datetime import datetime
 
 
 def push_to_database(Model, week_type):
@@ -41,6 +43,8 @@ def read_google_sheet_update():
     df.replace('\n', '<br>', regex=True, inplace=True)
     return(df['C mess Update'].loc['Items'], df['Accesed_page_at'].loc['Items'])
     return df
+
+
 def generate_databse(week_type):
     if week_type == "Odd":
         oddweek_URL ="https://docs.google.com/spreadsheets/d/1O3xKZPQVhSlvTAO1loZIhtkPxYcDg5eWBo1J5WeiiBc/gviz/tq?tqx=out:csv"
@@ -53,26 +57,26 @@ def generate_databse(week_type):
         df.replace('\n', '<br>', regex=True, inplace=True)
         df = df.T
     return(df)
-def get_menu_items(Day, Session):
-    weektype = "odd"
-    # read online excel sheet
-    if weektype == "odd":
-        URL = "https://docs.google.com/spreadsheets/d/1O3xKZPQVhSlvTAO1loZIhtkPxYcDg5eWBo1J5WeiiBc/gviz/tq?tqx=out:csv"
-    elif weektype == "even":
-        URL = "https://docs.google.com/spreadsheets/d/1tb1Y314_ybUspDj8_dMPWAla7rceSc1pSMgpf2L4J2E/gviz/tq?tqx=out:csv"
-    df = pd.read_csv(URL,  index_col=0)
-    df.replace('\n', '<br>', regex=True, inplace=True)
-    df = df.T
-    print("for day",Day)
-    # Print all column names in df
-    return(df[Day].loc[Session])
+
+
+def get_menu_items(current_time_ist, day, session):
+    # get date
+    date = time.strftime("%Y-%m-%d")
+    date_obj = datetime.strptime(date, '%Y-%m-%d')
+    # Compute week type
+    week_type = 'Odd' if date_obj.isocalendar()[1] % 2 == 1 else 'Even'
+    menu_items = MenuItem.objects.filter(day=day, session=session, week_type=week_type)
+    # Convert the QuerySet to a DataFrame
+    df = pd.DataFrame.from_records(menu_items.values())
+    print(menu_items)
+    return menu_items
 
 def get_current_time_session_day():
     # get current time and convert it to IST and then session it for breakfast, lunch, snacks or dinner
     current_time_utc = time.gmtime()
     # Convert to Indian Standard Time
     ist = pytz.timezone('Asia/Kolkata')
-    current_time_ist = time.localtime(time.mktime(current_time_utc)).tm_hour + ist.utcoffset(datetime.datetime.now()).seconds//3600# df.loc[len(df.index)] = {"Day":"IST",'Breakfast':str(current_time_ist)}
+    current_time_ist = time.localtime(time.mktime(current_time_utc)).tm_hour + ist.utcoffset(datetime.now()).seconds//3600# df.loc[len(df.index)] = {"Day":"IST",'Breakfast':str(current_time_ist)}
     now_time = str(current_time_ist)
     print(current_time_ist)
     day = time.strftime("%A")
