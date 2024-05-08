@@ -76,12 +76,30 @@ def menu_items(request):
     else:
         return render(request, 'menu_items.html')
 
+def update_database(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'update':
+            week_type = request.POST.get('week_type')
+            new_element = push_to_database(MenuItem, week_type)
+            # add a message to the user with all new elements added
+            if len(new_element) == 0:
+                messages.warning(request, 'Database already up to date. No new elements added.')
+            else:
+                messages.success(request, format_html('Database updated successfully. Added the following elements'))
+                parsed_elements = [tuple(str(elem).strip("()").split(", ")) for elem in new_element]
+                messages.success(request, parsed_elements)
+        elif action == 'remove':
+            MenuItem.objects.all().delete()
+            messages.success(request, 'All items removed from the database.')
+        return redirect('update')  # Redirect to a success page after updating the database
+    else:
+        context = {
+            'messages_items': parsed_elements if 'parsed_elements' in locals() else []
+        }
+        return render(request, 'update_db.html', context)  # Render the form with the context
 
 def my_view(request):
-
-    # push_to_database(MenuItem, "Even")
-    # push_to_database(MenuItem, "Odd")
-
 
     # Get the current time, day, and session
     current_time_ist, day, session = get_current_time_session_day()

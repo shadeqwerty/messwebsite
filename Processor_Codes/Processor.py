@@ -9,6 +9,7 @@ def push_to_database(Model, week_type):
     DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     SESSIONS = ['Breakfast', 'Lunch', 'Snacks', 'Dinner']
     model_instances = []
+    new_elements = []
 
     for day in DAYS:
         for session in SESSIONS:
@@ -20,11 +21,17 @@ def push_to_database(Model, week_type):
             food_items_list = [item.strip() for item in food_items_list]
             # For each food item, create a new instance of the Django model
             for food_item in food_items_list:
-                model_instance = Model(day=day, session=session, week_type=week_type, food_item=food_item)
-                model_instances.append(model_instance)
+                # Check if an instance with the same attributes already exists in the database
+                exists = Model.objects.filter(day=day, session=session, week_type=week_type, food_item=food_item).exists()
+                if not exists:
+                    model_instance = Model(day=day, session=session, week_type=week_type, food_item=food_item)
+                    model_instances.append(model_instance)
+                    new_elements.append((day, session, week_type, food_item))
 
     # Use Django's bulk_create method to insert all the model instances into the database at once
     Model.objects.bulk_create(model_instances)
+
+    return new_elements
 
 def read_google_sheet_update():
     # Construct the URL
