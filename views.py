@@ -11,7 +11,9 @@ from django.db.models import Avg
 from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-
+from .models import MenuItem
+from datetime import datetime
+from django.db.models import Q
 
 
 def logout_view(request):
@@ -35,7 +37,52 @@ def chart_data(request):
         'data': data,
     })
 
+def menu_items(request):
+    import random
+    from datetime import datetime
+    
+    if request.method == 'POST':
+        day = request.POST.get('day', None)
+        date = request.POST.get('date')
+        session = request.POST.get('session')
+        week_type = request.POST.get('week_type', 'Even')
+
+        if date:
+            print("Date selected")
+            date_obj = datetime.strptime(date, '%Y-%m-%d')
+
+            # Compute week type
+            week_type = 'Odd' if date_obj.isocalendar()[1] % 2 == 1 else 'Even'
+
+            # Compute day
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            day = days[date_obj.weekday()]
+            print(day, week_type, session)
+            
+        else:
+
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+        if session != 'All':
+            menu_items = MenuItem.objects.filter(day=day, week_type=week_type, session=session)
+        else:
+            print("All SELECTED")
+            menu_items = MenuItem.objects.filter(day=day, week_type=week_type)
+            print(len(menu_items))
+        sessions = ['Breakfast', 'Lunch', 'Snacks', 'Dinner']
+        return render(request, 'menu_items.html', {'menu_items': menu_items, 'sessions': sessions, 'days': days, 'session': session,
+            'week_type': week_type,
+            'day': day})
+    else:
+        return render(request, 'menu_items.html')
+
+
 def my_view(request):
+
+    # push_to_database(MenuItem, "Even")
+    # push_to_database(MenuItem, "Odd")
+
+
     # Get the current time, day, and session
     current_time_ist, day, session = get_current_time_session_day()
     now_time = str(current_time_ist)

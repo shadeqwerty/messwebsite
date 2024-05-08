@@ -17,7 +17,6 @@
     }
     
     </style>
-<div class="row">
     <div class="col">
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -44,7 +43,7 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                
             </div>
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }}">
@@ -52,6 +51,5 @@
                 </div>
             {% endfor %}
     </div>
-</div>
 
 {% endblock %}

@@ -23,6 +23,25 @@
                 font-size: 14px; /* Smaller font size for tablets and mobile devices */
             }
         }
+        body {
+        background: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+    @media (max-width: 768px) {
+        body {
+            /* Different background for mobile */
+            background: url('https://images.unsplash.com/photo-1556139943-4bdca53adf1e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            /* https://images.unsplash.com/photo-1604077350837-c7f82f28653f?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); */
+            /* https://images.unsplash.com/photo-1555448248-2571daf6344b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdhbGxwYXBlcnN8ZW58MHwxfDB8fHwy');  */
+            -webkit-background-size: contain;
+            -moz-background-size: contain;
+            -o-background-size: contain;
+            background-size: contain;
+        }
+    }
         header {
             background-color: #333;
             color: #ffffff;
@@ -65,7 +84,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <div class="header-strip">C Mess Menu and Feedback</div>
+                <div class="header-strip"> <a href="{% url 'index' %}" >C Mess Menu and Feedback</a></div>
                 <div class="login-status">
                     {% if user.is_authenticated %}
                         Logged in as {{ user.username }} | <a href="{% url 'llogout' %}">Logout</a>

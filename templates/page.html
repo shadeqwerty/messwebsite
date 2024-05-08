@@ -46,7 +46,14 @@
         border-radius: 5px;
         text-decoration: none;
     }
-
+    .btnsel {
+        display: inline-block;
+        background-color: #b63a1525;
+        color: #0911f0;
+        padding: 2px 5px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
     .btn:hover {
         background-color: #5a6268;
 
@@ -62,6 +69,7 @@
             <div class="info-box">
                 <h2>View Full Menu  </h2>
                 <p>Selection </p>
+                <a href="{% url 'menu_items' %}">View Menu Items</a>
             </div>
             <!-- <div class="info-box">
                 <h2>Latest Updated Menu at {{ access_time }}</h2>
@@ -69,8 +77,7 @@
             </div> -->
             {% if not user.is_authenticated %}
             <div class="container_cntr">
-                <a href="{% url 'register' %}">Register to make your reviews</a>
-                <a href="{% url 'login' %}">Login to make your reviews</a>
+                <a href="{% url 'login' %}" class ="btnsel">Login / Register to make your reviews</a>
             </div>
             {% endif %}
             <a href="{% url 'reviews' %}" class="btn">View All Reviews or Submit your review</a>

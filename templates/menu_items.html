@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    .form-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    
+
+    <form method="post">
+        {% csrf_token %}
+        <h3>Select Session</h3>
+        <div class="form-section">
+            <label for="session">Session:</label>
+            <select id="session" name="session">
+                <option value="All" {% if session == "All" %}selected{% endif %}>All</option>
+                <option value="Breakfast" {% if session == "Breakfast" %}selected{% endif %}>Breakfast</option>
+                <option value="Lunch" {% if session == "Lunch" %}selected{% endif %}>Lunch</option>
+                <option value="Snacks" {% if session == "Snacks" %}selected{% endif %}>Snacks</option>
+                <option value="Dinner" {% if session == "Dinner" %}selected{% endif %}>Dinner</option>
+            </select>
+        </div>
+        <h3>Next Select Date or the Day and Week Type</h3>
+        <div class="form-section">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date">
+        </div>
+        <div class="form-section">
+            <label for="week_type">Or Week Type:</label>
+            <select id="week_type" name="week_type">
+                <option value="" {% if week_type == "" %}selected{% endif %}>Select...</option>
+                <option value="Odd" {% if week_type == "Odd" %}selected{% endif %}>Odd</option>
+                <option value="Even" {% if week_type == "Even" %}selected{% endif %}>Even</option>
+            </select>
+            <label for="day">and Day:</label>
+            <select id="day" name="day">
+                <option value="" {% if day == "" %}selected{% endif %}>Select...</option>
+                <option value="Monday" {% if day == "Monday" %}selected{% endif %}>Monday</option>
+                <option value="Tuesday" {% if day == "Tuesday" %}selected{% endif %}>Tuesday</option>
+                <option value="Wednesday" {% if day == "Wednesday" %}selected{% endif %}>Wednesday</option>
+                <option value="Thursday" {% if day == "Thursday" %}selected{% endif %}>Thursday</option>
+                <option value="Friday" {% if day == "Friday" %}selected{% endif %}>Friday</option>
+                <option value="Saturday" {% if day == "Saturday" %}selected{% endif %}>Saturday</option>
+                <option value="Sunday" {% if day == "Sunday" %}selected{% endif %}>Sunday</option>
+            </select>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
+{% regroup menu_items by day as menu_items_by_day %}
+
+{% for day in menu_items_by_day %}
+<h2>{{ day.grouper }}</h2> <!-- Day -->
+
+{% regroup day.list by session as menu_items_by_session %}
+{% for session in menu_items_by_session %}
+<h3>{{ session.grouper }}</h3> <!-- Session -->
+
+{% regroup session.list by week_type as menu_items_by_week_type %}
+{% for week_type in menu_items_by_week_type %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Food Item</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for menu_item in week_type.list %}
+        <tr>
+            <td>{{ menu_item.food_item }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td>No menu items found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endblock %}
+

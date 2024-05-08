@@ -1,6 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import User
+class MenuItem(models.Model):
+    DAYS_CHOICES = [
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+        ('Sunday', 'Sunday'),
+    ]
 
+    SESSION_CHOICES = [
+        ('Breakfast', 'Breakfast'),
+        ('Lunch', 'Lunch'),
+        ('Snacks', 'Snacks'),
+        ('Dinner', 'Dinner'),
+    ]
+
+    WEEK_TYPE_CHOICES = [
+        ('Odd', 'Odd'),
+        ('Even', 'Even'),
+    ]
+
+    day = models.CharField(max_length=9, choices=DAYS_CHOICES)
+    session = models.CharField(max_length=9, choices=SESSION_CHOICES)
+    week_type = models.CharField(max_length=4, choices=WEEK_TYPE_CHOICES)
+    food_item = models.CharField(max_length=255)
+    
 class FoodItem(models.Model):
     name = models.CharField(max_length=200)
 
