@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from .Processor_Codes.Processor import *
 from django.shortcuts import render, redirect
 from .forms import ReviewForm
@@ -75,7 +75,7 @@ def menu_items(request):
             'day': day})
     else:
         return render(request, 'menu_items.html')
-
+@permission_required('messwebsite.can_update_database1')
 def update_database(request):
     if request.method == 'POST':
         action = request.POST.get('action')

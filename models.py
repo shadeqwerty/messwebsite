@@ -27,7 +27,10 @@ class MenuItem(models.Model):
     session = models.CharField(max_length=9, choices=SESSION_CHOICES)
     week_type = models.CharField(max_length=4, choices=WEEK_TYPE_CHOICES)
     food_item = models.CharField(max_length=255)
-    
+    class Meta:
+        permissions = [
+            ("can_update_database1", "Awesome User can update mess items database"),
+        ]
 class FoodItem(models.Model):
     name = models.CharField(max_length=200)
 
