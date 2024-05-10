@@ -8,7 +8,7 @@
                 {% regroup Next_menu_item by day as menu_items_by_day %}
 
                 {% for day in menu_items_by_day %}
-                <!-- <h3>{{ day.grouper }}</h3> Day -->
+
 
                 {% regroup day.list by session as menu_items_by_session %}
                 {% for session in menu_items_by_session %}
@@ -43,19 +43,12 @@
             <div class="info-box">
                 <a href="{% url 'menu_items' %}" class = "good_btn">View Menu Items by selection</a>
             </div>
-            <!-- <div class="info-box">
-                <h2>Latest Updated Menu at {{ access_time }}</h2>
-                <p>{{ latest_updated_menu }}</p>
-            </div> -->
             {% if not user.is_authenticated %}
             <div class="container_cntr">
                 <a href="{% url 'login' %}" class ="btnsel">Login / Register to make your reviews</a>
             </div>
             {% endif %}
-            <div class="container_cntr">
-                <a href="{% url 'reviews' %}" class="btnde">View All Reviews or Submit your review</a>
-
-            </div>
+            
         </div>
     </div>
 </div>

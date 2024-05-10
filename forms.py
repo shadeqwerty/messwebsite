@@ -1,8 +1,10 @@
-# forms.py
-
 from django import forms
-from .models import Review
+from .models import Review, MenuItem
 
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comments',]
 
 class FilterForm(forms.Form):
     SESSION_CHOICES = [
@@ -31,10 +33,6 @@ class FilterForm(forms.Form):
     week_type = forms.ChoiceField(choices=WEEK_TYPE_CHOICES)
     day = forms.ChoiceField(choices=DAY_CHOICES)
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
     class Meta:
         fields = ['day', 'session', 'week_type', 'date']
-
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ['rating', 'comments']

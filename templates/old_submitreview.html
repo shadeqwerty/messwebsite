@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        {% if user.is_authenticated %}
+            <div class="container">
+                <div class="review-box">
+                    <h2>Submit a Review</h2>
+
+                    
+                    <form method="post" class="form-group" action="{% url 'submitreview' menu_item.id %}" >
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <p>You must be logged in to submit a review.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

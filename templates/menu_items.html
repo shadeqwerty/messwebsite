@@ -52,27 +52,31 @@
 <h3>{{ session.grouper }}</h3> <!-- Session -->
 
 {% regroup session.list by week_type as menu_items_by_week_type %}
-{% for week_type in menu_items_by_week_type %}
 
+
+{% for week_type in menu_items_by_week_type %}
 <table>
     <thead>
         <tr>
             <th>Food Item</th>
+            <th>Action</th> <!-- New column for the review link/button -->
         </tr>
     </thead>
     <tbody>
         {% for menu_item in week_type.list %}
         <tr>
             <td>{{ menu_item.food_item }}</td>
-        </tr>
+            <td>
+                {{ menu_item.id }}
+                <a href="{% url 'submitreview' %}?food_item={{ menu_item.food_item }}&day={{ menu_item.day }}&session={{ menu_item.session }}&week_type={{ menu_item.week_type }}&menu_item_id={{ menu_item.id }}">Review this item</a>
+            </tr>
         {% empty %}
         <tr>
-            <td>No menu items found</td>
+            <td colspan="2">No menu items found</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
 {% endfor %}
 {% endfor %}
 {% endfor %}

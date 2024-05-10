@@ -14,6 +14,51 @@ from .models import MenuItem, Review
 from datetime import datetime
 from django.db.models import Q
 
+@login_required
+def submitreview(request):
+    if request.method == 'GET':
+        # Retrieve URL parameters
+        menu_item_id = request.GET.get('menu_item_id')
+        food_item = request.GET.get('food_item')
+        day = request.GET.get('day')
+        session = request.GET.get('session')
+        week_type = request.GET.get('week_type')
+        print(menu_item_id, food_item, day, session, week_type)
+        # Fetch the menu item using the menu_item_id
+        menu_item = MenuItem.objects.get(pk=menu_item_id)
+
+        # Prepopulate the form fields with the menu item details
+        initial_data = {
+            'menu_item': menu_item,  # Pass the menu_item object directly
+            'rating': 1,  # Set default rating if needed
+            'comments': '',  # Set default comments if needed
+        }
+
+        # Create the review form instance with initial data
+        review_form = ReviewForm(initial=initial_data)
+
+        # Render the submit review template with the form and menu item
+        return render(request, 'submitreview.html', {'review_form': review_form, 'menu_item': menu_item})
+
+    elif request.method == 'POST':
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            review_form.save()
+            return redirect('success')  # Redirect to success page after review submission
+
+    else:
+        return HttpResponseNotAllowed(['GET', 'POST'])
+# def review_view(request, food_item_id=None):
+#     if request.method == 'POST':
+#         review_form = ReviewForm(request.POST)
+#         if review_form.is_valid():
+#             review_form.save()
+#             return redirect('success')
+#     else:
+#         review_form = ReviewForm(food_item_id=food_item_id)
+
+#     return render(request, 'review.html', {'review_form': review_form})
+
 
 def logout_view(request):
     print("logging out")
@@ -100,7 +145,7 @@ def my_view(request):
     # Get the current time, day, and session
     current_time_ist, day, session = get_current_time_session_day()
     now_time = str(current_time_ist)
-
+    
     # Get the next menu item and the latest updated menu
     Next_menu_item = get_menu_items(current_time_ist, day, session)
     latest_updated_menu, access_time = read_google_sheet_update()
@@ -127,48 +172,9 @@ def my_view(request):
 
 
 
-def review_view(request):
-    if request.method == 'POST':
-        filter_form = FilterForm(request.POST)
-        if filter_form.is_valid():
-            # Get the item based on the filters
-            item = MenuItem.objects.filter(
-                session=filter_form.cleaned_data['session'],
-                week_type=filter_form.cleaned_data['week_type'],
-                day=filter_form.cleaned_data['day']
-            ).first()
-            # Pass the item to the review form
-            review_form = ReviewForm(initial={'item': item})
-    else:
-        filter_form = FilterForm()
-        review_form = ReviewForm()
-
-    return render(request, 'review.html', {'filter_form': filter_form, 'review_form': review_form})
-
-
-@login_required
-def submitmenureview(request):
-    menu_item = None
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            session = form.cleaned_data['session']
-            date = form.cleaned_data['date']
-            week_type = form.cleaned_data['week_type']
-            day = form.cleaned_data['day']
-            menu_item = MenuItem.objects.filter(session=session, date=date, week_type=week_type, day=day).first()
-            if menu_item:
-                new_review = Review(user=request.user, food_item=menu_item, rating=form.cleaned_data['rating'], comments=form.cleaned_data['comments'])
-                new_review.save()
-                return redirect('reviews')
-    else:
-        form = ReviewForm()
-
-    return render(request, 'submit_menu_review.html', {'form': form, 'menu_item': menu_item})
-
-def reviews_viewer(request):
-    reviews = Review.objects.all()
-    return render(request, 'reviews.html', {'reviews': reviews})
+# def reviews_viewer(request):
+#     reviews = Review.objects.all()
+#     return render(request, 'reviews.html', {'reviews': reviews})
 
 def register(request):
     if request.method == 'POST':
